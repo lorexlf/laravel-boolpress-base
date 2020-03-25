@@ -2,6 +2,6 @@
 
 @section('main')
 
-<p>index posts!</p>
+<p>homepage</p>
 
 @endsection
