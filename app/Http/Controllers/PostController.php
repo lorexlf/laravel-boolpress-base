@@ -8,6 +8,12 @@ use App\Post;
 class PostController extends Controller
 {
 
+    private $validationPost = [
+        'title' => 'required|string|max:255',
+        'text' => 'required|string',
+        'img' => 'required|string'
+    ];
+
     // --------------------------------------------------
     // I N D E X
     // --------------------------------------------------
@@ -34,7 +40,7 @@ class PostController extends Controller
      */
     public function create()
     {
-        //
+        return view('posts.create');
     }
 
     // --------------------------------------------------
@@ -49,7 +55,26 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $request->all();
+
+        // Validazione
+        $request->validate([
+            'img' => 'required|string|max:255',
+            'title' => 'required|string|max:255',
+            'text' => 'required|text'
+        ]);
+
+        $newPost = new Post;
+
+        // Metodo 2
+        $newPost->fill($data);
+        $saved = $newPost->save();
+        
+        if($saved){
+            $post = Post::orderBy('id', 'desc')->first();
+            return redirect()->route('posts.show', compact('post'));
+        }
+        dd('Post non inserito');
     }
 
     // --------------------------------------------------
@@ -62,9 +87,12 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Post $post)
     {
-        //
+        if(empty($post)){
+            abort('404');
+        }
+        return view('posts.show', compact('post'));
     }
 
     // --------------------------------------------------
@@ -77,9 +105,13 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Post $post)
     {
-        //
+        return view('posts.create', compact('post'));
+
+        if(empty($post)){
+            abort('404');
+        }
     }
 
     // --------------------------------------------------
@@ -95,7 +127,22 @@ class PostController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $post = Post::find($id);
+
+        if(empty($post)){
+            abort('404');
+        }
+
+        $data = $request->all();
+
+        $request->validate($this->validationPost);
+        
+        $updated = $post->update($data);
+
+        if($updated){
+            $post = Post::find($id);
+            return redirect()->route('posts.show', compact('post'));
+        }
     }
 
     // --------------------------------------------------
@@ -108,8 +155,15 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Post $post)
     {
-        //
+        $id = $post->id;
+        $deleted = $post->delete();
+        // $data = [
+        //     'id' => $id,
+        //     'posts' => Post::all()
+        // ];
+        // return view('posts.index', $data);
+        return redirect()->route('posts.index')->with('id', $id);
     }
 }
