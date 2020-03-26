@@ -16,10 +16,10 @@
       </div>
       @endif
    
-      <form action="{{(!empty($post)) ? route('posts.update', $post->id) : route('posts.store')}}" method="POST">
+      <form action="{{(!empty($post)) ? route('posts.update', $post->id) : route('posts.store')}}" method="post">
       
          @csrf
-         @if(!empty('$post'))
+         @if(!empty($post))
             @method('PATCH')
                @else
                   @method('POST')

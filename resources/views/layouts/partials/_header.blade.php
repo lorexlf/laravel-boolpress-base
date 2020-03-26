@@ -11,9 +11,6 @@
         <a class="nav-link" href="{{route('website.home')}}">Home <span class="sr-only">(current)</span></a>
       </li>
       <li class="nav-item active">
-        <a class="nav-link" href="{{route('posts.index')}}">Blog <span class="sr-only">(current)</span></a>
-      </li>
-      <li class="nav-item active">
         <a class="nav-link btn btn-outline-secondary px-3" href="{{route('posts.create')}}">+ <span class="sr-only">(current)</span></a>
       </li>
    </div>
